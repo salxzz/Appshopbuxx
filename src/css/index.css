@@ -1,0 +1,79 @@
+:root {
+  --bg: #0d0d0d;
+  --card: #1a1a1a;
+  --primary: #ff1a1a;
+  --primary-dark: #cc0000;
+  --text: #fff;
+  --text-secondary: #aaa;
+  --border: #2a2a2a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 350px;
+}
+
+.card {
+  background: var(--card);
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.logo {
+  width: 70px;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 5px;
+}
+
+p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.discord-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--primary);
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.discord-btn img {
+  width: 20px;
+  filter: invert(1);
+}
+
+.discord-btn:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+}

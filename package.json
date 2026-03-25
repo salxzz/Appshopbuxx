@@ -1,0 +1,20 @@
+{
+  "name": "shopbuxx",
+  "version": "1.0.0",
+  "description": "site de vendas da shopbuxx",
+  "homepage": "https://github.com/salxzz/Appshopbuxx#readme",
+  "bugs": {
+    "url": "https://github.com/salxzz/Appshopbuxx/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salxzz/Appshopbuxx.git"
+  },
+  "license": "ISC",
+  "author": "salxz",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
