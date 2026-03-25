@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopbuxx - Detalhes do Item</title>
+
+  <!-- fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- css -->
+  <link rel="stylesheet" href="css/homepage.css">
+  <link rel="stylesheet" href="css/details.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <a href="homepage.html" style="display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--primary);">
+          <img src="img/logo.png" alt="Shopbuxx Logo">
+          <span>Shopbuxx</span>
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="homepage.html">Loja</a>
+        <a href="#">Inventário</a>
+        <div class="user-profile">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg" class="discord-icon" alt="User">
+          <span>Saulo</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <a href="homepage.html" class="back-link">&larr; Voltar para a loja</a>
+    
+    <div class="details-container">
+      <div class="image-section">
+        <div class="main-image-wrapper">
+          <span class="item-rarity legendary" style="z-index: 2;">Lendário</span>
+          <img src="img/magical_sword.png" alt="Espada Mágica Flamejante" class="main-image">
+        </div>
+      </div>
+      
+      <div class="info-section">
+        <h1 class="item-title">Espada Mágica Flamejante</h1>
+        <p class="item-id">ID do Item: #SBX-9982</p>
+        
+        <div class="price-section">
+          <span class="price">R$ 49,90</span>
+          <span class="stock">Em estoque: 1 un.</span>
+        </div>
+        
+        <div class="description-section">
+          <h3>Descrição do Item</h3>
+          <p>
+            Uma espada ancestral banhada em chamas que causa grande dano de queimadura nos inimigos. 
+            Forjada nos vulcões de Ignis, esta arma brilhante concede +50 de ataque físico e 20% de chance te causar [Queimadura] a cada acerto crítico. 
+            Ideal para guerreiros focados em dano por segundo.
+          </p>
+        </div>
+        
+        <div class="action-section">
+          <div class="quantity-selector">
+            <button class="qty-btn" id="decrease">-</button>
+            <input type="number" value="1" min="1" max="1" class="qty-input" readonly>
+            <button class="qty-btn" id="increase">+</button>
+          </div>
+          
+          <button class="buy-button">Comprar Agora</button>
+        </div>
+        
+        <div class="warning-box">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          Entrega automática na sua conta conectada via Discord em até 5 minutos após a confirmação do pagamento.
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

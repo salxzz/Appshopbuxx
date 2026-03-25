@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopbuxx - Loja de Items</title>
+
+  <!-- fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- css -->
+  <link rel="stylesheet" href="css/homepage.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="img/logo.png" alt="Shopbuxx Logo">
+        <span>Shopbuxx</span>
+      </div>
+      <div class="nav-links">
+        <a href="#" class="active">Loja</a>
+        <a href="#">Inventário</a>
+        <div class="user-profile">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg" class="discord-icon" alt="User">
+          <span>salxz</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="hero">
+      <h1>Itens em Destaque</h1>
+      <p>
+        Equipe-se com os melhores itens do servidor. Obtenha as melhores <span style="color: var(--primary); font-weight: 700;">contas!</span>
+      </p>
+    </section>
+
+    <div class="grid-container">
+      
+      <!-- Card 1 -->
+      <div class="item-card">
+        <div class="item-image-container">
+          <img src="img/magical_sword.png" alt="Espada Mágica" class="item-image">
+          <span class="item-rarity legendary">Lendário</span>
+        </div>
+        <div class="item-details">
+          <h3 class="item-name">Espada Mágica Flamejante</h3>
+          <p class="item-description">Uma espada ancestral banhada em chamas que causa grande dano de queimadura nos inimigos.</p>
+          <div class="item-meta">
+            <span class="item-qty">Qtd: 1 un.</span>
+            <span class="item-price">R$ 49,90</span>
+          </div>
+          <button class="buy-btn" onclick="window.location.href='details.html'">
+            <span>Ver Detalhes</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="item-card">
+        <div class="item-image-container">
+          <img src="img/treasure_chest.png" alt="Baú de Ouro" class="item-image">
+          <span class="item-rarity epic">Épico</span>
+        </div>
+        <div class="item-details">
+          <h3 class="item-name">Baú do Tesouro Real</h3>
+          <p class="item-description">Pode conter itens raros e valiosos, ou uma grande quantidade de moedas do jogo.</p>
+          <div class="item-meta">
+            <span class="item-qty">Qtd: 5 un.</span>
+            <span class="item-price">R$ 29,90</span>
+          </div>
+          <button class="buy-btn" onclick="window.location.href='details.html'">
+            <span>Ver Detalhes</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="item-card">
+        <div class="item-image-container">
+          <img src="img/scifi_gun.png" alt="Arma Sci-Fi" class="item-image">
+          <span class="item-rarity mythic">Mítico</span>
+        </div>
+        <div class="item-details">
+          <h3 class="item-name">Rifle de Plasma V-9</h3>
+          <p class="item-description">Dano massivo de energia concentrada. Disparo letal que atravessa escudos facilmente.</p>
+          <div class="item-meta">
+            <span class="item-qty">Qtd: 1 un.</span>
+            <span class="item-price">R$ 99,90</span>
+          </div>
+          <button class="buy-btn" onclick="window.location.href='details.html'">
+            <span>Ver Detalhes</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="item-card">
+        <div class="item-image-container">
+          <img src="img/health_potion.png" alt="Poção de Vida" class="item-image">
+          <span class="item-rarity common">Comum</span>
+        </div>
+        <div class="item-details">
+          <h3 class="item-name">Poção de Vida Maior</h3>
+          <p class="item-description">Restaura 100% da vida de forma instantânea. Um item vital para missões perigosas.</p>
+          <div class="item-meta">
+            <span class="item-qty">Qtd: 20 un.</span>
+            <span class="item-price">R$ 9,90</span>
+          </div>
+          <button class="buy-btn">
+            <span>Comprar Item</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
