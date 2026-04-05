@@ -25,9 +25,10 @@
       <div class="nav-links">
         <a href="homepage.html">Loja</a>
         <a href="#">Inventário</a>
+        <div id="role-links" style="display: flex; gap: 20px;"></div>
         <div class="user-profile">
-          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg" class="discord-icon" alt="User">
-          <span>Saulo</span>
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg" id="user-avatar" class="discord-icon" alt="User">
+          <span id="user-name">Carregando...</span>
         </div>
       </div>
     </div>
@@ -81,5 +82,27 @@
       </div>
     </div>
   </main>
+
+  <!-- Modal PIX -->
+  <div id="pix-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2>Pagamento PIX</h2>
+      <p>Escaneie o QR Code abaixo ou copie o código para pagar.</p>
+      
+      <div class="qr-container">
+        <img id="qr-code-img" src="" alt="QR Code PIX">
+      </div>
+
+      <div class="pix-copy-paste">
+        <input type="text" id="pix-code-input" readonly>
+        <button id="copy-pix-btn">Copiar</button>
+      </div>
+
+      <p class="waiting-payment">Aguardando confirmação do pagamento...</p>
+    </div>
+  </div>
+
+  <script src="js/details.js"></script>
 </body>
 </html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Admin - Shopbuxx</title>
+    <link rel="stylesheet" href="css/homepage.css">
+    <style>
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 2rem; }
+        .admin-card { background: #1a1a1a; padding: 2rem; border-radius: 12px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: #fff; border-radius: 6px; }
+        .btn-action { background: var(--primary); color: #fff; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
+        .status-msg { margin-top: 1rem; padding: 10px; border-radius: 6px; display: none; }
+        .success { background: #27ae6033; color: #27ae60; border: 1px solid #27ae60; display: block; }
+        .error { background: #e74c3c33; color: #e74c3c; border: 1px solid #e74c3c; display: block; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"><span>Shopbuxx Admin</span></div>
+            <div class="nav-links"><a href="homepage.html">Sair do Painel</a></div>
+        </div>
+    </nav>
+
+    <main class="admin-grid">
+        <section class="admin-card">
+            <h2>Promover por ID do Discord</h2>
+            <p style="color: #888; margin-bottom: 1rem;">Digite o ID numérico do Discord do usuário para torná-lo Vendedor.</p>
+            <input type="text" id="discord-id" placeholder="Ex: 1149804841162518540">
+            <button class="btn-action" onclick="promoteSellers()">Promover para Vendedor</button>
+            <div id="promote-msg" class="status-msg"></div>
+
+            <h2 style="margin-top:2rem;">Criar Vendedor Manual</h2>
+            <p style="color: #888; margin-bottom: 1rem;">Crie uma conta de vendedor com e-mail e senha.</p>
+            <input type="text" id="seller-name" placeholder="Nome Completo">
+            <input type="email" id="seller-email" placeholder="E-mail de Acesso">
+            <input type="password" id="seller-pass" placeholder="Senha Temporária">
+            <button class="btn-action" onclick="createManualSeller()">Cadastrar Vendedor</button>
+            <div id="create-msg" class="status-msg"></div>
+        </section>
+
+        <!-- NOVO: Gerenciamento Global de Produtos -->
+        <section class="admin-card">
+            <h2>Gerenciar Todos os Produtos</h2>
+            <p style="color: #888; margin-bottom: 1rem;">O Admin pode editar ou excluir qualquer item da loja.</p>
+            <div id="all-products">
+                <p>Carregando banco de dados de itens...</p>
+            </div>
+        </section>
+    </main>
+    <script>
+        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8000' : `${window.location.protocol}//${window.location.hostname}:8000`;
+        const token = localStorage.getItem('auth_token');
+        if (!token) window.location.href = 'index.html';
+
+        async function fetchAllProducts() {
+            const list = document.getElementById('all-products');
+            try {
+                const res = await fetch(`${API_BASE}/api/seller/products`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!res.ok) throw new Error("Acesso negado ou erro no servidor");
+
+                const products = await res.json();
+                renderAllProducts(products);
+            } catch (err) { 
+                console.error(err);
+                list.innerHTML = `<p style="color:#e74c3c;">Erro ao carregar: ${err.message}</p>`;
+            }
+        }
+
+        function renderAllProducts(products) {
+            const list = document.getElementById('all-products');
+            list.innerHTML = '';
+            
+            if (products.length === 0) {
+                list.innerHTML = '<p>Nenhum produto cadastrado.</p>';
+                return;
+            }
+
+            products.forEach(p => {
+                const div = document.createElement('div');
+                div.style = "background:#222; padding:12px; border-radius:10px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; border:1px solid #333;";
+                
+                const sellerInfo = p.seller_id ? p.seller_id.substring(0,8) : "Manual";
+                
+                div.innerHTML = `
+                    <div>
+                        <strong style="color:var(--primary); font-size:1.1rem;">${p.name}</strong><br>
+                        <small style="color:#888;">Vendedor: #${sellerInfo} | Estoque: <strong>${p.stock_count || 0}</strong></small>
+                    </div>
+                    <button onclick="deleteProduct('${p.id}')" style="background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Excluir</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('Deseja realmente excluir este produto da loja inteira?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/seller/products/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) fetchAllProducts();
+                else alert("Erro ao excluir produto.");
+            } catch (err) { alert("Erro de conexão."); }
+        }
+
+        // --- Outras Funções Admin ---
+        async function promoteSellers() {
+            const discord_id = document.getElementById('discord-id').value;
+            const msgDiv = document.getElementById('promote-msg');
+            if (!discord_id) return;
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/sellers/promote`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ discord_id })
+                });
+                
+                const data = await res.json();
+                if (res.ok) {
+                    msgDiv.innerText = `Sucesso! O usuário '${data.name}' agora é vendedor.`;
+                    msgDiv.className = 'status-msg success';
+                } else {
+                    msgDiv.innerText = 'Erro: ' + (data.detail || 'Falha');
+                    msgDiv.className = 'status-msg error';
+                }
+            } catch (err) { msgDiv.innerText = 'Erro de conexão.'; msgDiv.className = 'status-msg error'; }
+        }
+
+        async function createManualSeller() {
+            const name = document.getElementById('seller-name').value;
+            const email = document.getElementById('seller-email').value;
+            const password = document.getElementById('seller-pass').value;
+            const msgDiv = document.getElementById('create-msg');
+
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/sellers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    msgDiv.innerText = `Vendedor '${data.name}' criado!`;
+                    msgDiv.className = 'status-msg success';
+                } else {
+                    msgDiv.innerText = 'Erro: ' + (data.detail || 'Verifique os dados');
+                    msgDiv.className = 'status-msg error';
+                }
+            } catch (err) { msgDiv.innerText = 'Erro de conexão.'; msgDiv.className = 'status-msg error'; }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', fetchAllProducts);
+    </script>
+</body>
+</html>

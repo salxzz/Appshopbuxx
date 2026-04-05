@@ -20,11 +20,12 @@
         <span>Shopbuxx</span>
       </div>
       <div class="nav-links">
-        <a href="#" class="active">Loja</a>
-        <a href="#">Inventário</a>
+        <a href="homepage.html" class="active">Loja</a>
+        <a href="#" id="inventory-toggle">Inventário</a>
+        <div id="role-links" style="display: flex; gap: 20px;"></div>
         <div class="user-profile">
-          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg" class="discord-icon" alt="User">
-          <span>salxz</span>
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg" id="user-avatar" class="discord-icon" alt="User">
+          <span id="user-name">Carregando...</span>
         </div>
       </div>
     </div>
@@ -118,6 +119,41 @@
 
     </div>
   </main>
+
+  <!-- Modal de Perfil e Inventário -->
+  <div id="profile-modal" class="modal">
+    <div class="modal-content profile-layout">
+      <span class="close-modal" id="close-profile">&times;</span>
+      
+      <div class="profile-sidebar">
+          <img src="" id="modal-avatar" alt="Avatar">
+          <h2 id="modal-name">Carregando...</h2>
+          <p id="modal-role"></p>
+          <div style="width:100%; height:1px; background:#222; margin:1.5rem 0;"></div>
+          <button class="nav-btn active" onclick="showTab('inventory')">📦 Meu Inventário</button>
+          <button class="nav-btn" onclick="showTab('history')">📜 Histórico</button>
+          <div style="flex:1;"></div>
+          <button class="nav-btn" style="color:#e74c3c; margin-bottom:1rem;" onclick="logout()">Sair da Conta</button>
+      </div>
+
+      <div class="profile-body">
+          <div id="tab-inventory" class="tab-content">
+              <h3>Meu Inventário</h3>
+              <p class="tab-desc">Abaixo estão as contas e chaves que você já comprou.</p>
+              <div id="user-inventory-list" class="inventory-list">
+                  <p>Buscando seus itens...</p>
+              </div>
+          </div>
+          <div id="tab-history" class="tab-content" style="display:none;">
+              <h3>Histórico</h3>
+              <p class="tab-desc">Seus pedidos realizados recentemente.</p>
+              <div class="inventory-list">
+                <p style="color:#444;">Nenhuma compra registrada.</p>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
 
   <script src="js/homepage.js"></script>
 </body>

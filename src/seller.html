@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Vendedor - Shopbuxx</title>
+    <link rel="stylesheet" href="css/homepage.css">
+    <style>
+        .dashboard-container { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; padding: 2rem; }
+        .form-section, .list-section { background: #1a1a1a; padding: 2rem; border-radius: 12px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: #fff; border-radius: 6px; }
+        button { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn-save { background: #27ae60; color: #fff; width: 100%; margin-top: 10px; }
+        .btn-edit { background: #f39c12; color: #fff; margin-right: 5px; }
+        .btn-delete { background: #e74c3c; color: #fff; }
+        .product-item { background: #222; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .product-info h4 { margin: 0; color: var(--primary); }
+        .product-info p { margin: 5px 0; font-size: 0.9rem; color: #ccc; }
+        .stock-control { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .stock-btn { background: #333; color: #fff; padding: 5px 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"><span>Shopbuxx Seller</span></div>
+            <div class="nav-links"><a href="homepage.html">Voltar para a Loja</a></div>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <!-- Coluna Esquerda: Cadastro e Config -->
+        <div class="form-container">
+            <section class="form-section">
+                <h2 id="form-title">Criar Novo Produto</h2>
+                <input type="hidden" id="edit-id">
+                <input type="text" id="prod-name" placeholder="Nome do Produto">
+                <textarea id="prod-desc" placeholder="Descrição completa"></textarea>
+                <input type="number" id="prod-price" placeholder="Preço (Ex: 49.90)">
+                <input type="text" id="prod-img" placeholder="URL da imagem (Opcional)">
+                <button class="btn-save" id="save-btn" onclick="handleSave()">Publicar Item</button>
+                <button class="btn-save" id="cancel-btn" style="display:none; background:#555;" onclick="resetForm()">Cancelar Edição</button>
+            </section>
+
+            <section class="form-section" style="margin-top: 2rem;">
+                <h2>Configurações do Mercado Pago</h2>
+                <p style="font-size: 0.8rem; color: #888; margin-bottom: 10px;">Insira seu 'Access Token' de produção para receber via PIX.</p>
+                <input type="password" id="mp-token" placeholder="APP_USR-...">
+                <button class="btn-save" onclick="saveMP()">Salvar Token de Recebimento</button>
+            </section>
+        </div>
+
+        <!-- Coluna Direita: Meus Produtos -->
+        <section class="list-section">
+            <h2>Meus Produtos Ativos</h2>
+            <div id="products-list">
+                <p>Carregando seus produtos...</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const token = localStorage.getItem('auth_token');
+        if (!token) window.location.href = 'index.html';
+
+        async function fetchProducts() {
+            try {
+                const res = await fetch('http://localhost:8000/api/seller/products', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const products = await res.json();
+                renderProducts(products);
+            } catch (err) { console.error(err); }
+        }
+
+        function renderProducts(products) {
+            const list = document.getElementById('products-list');
+            list.innerHTML = products.length ? '' : '<p>Você ainda não tem produtos cadastrados.</p>';
+            
+            products.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'product-item';
+                div.innerHTML = `
+                    <div class="product-info">
+                        <h4>${p.name}</h4>
+                        <p>R$ ${p.price.toFixed(2)} | Contas em Estoque: <strong>${p.stock_count}</strong></p>
+                        <div class="stock-control">
+                            <button class="stock-btn" onclick="updateStock('${p.id}')">Adicionar Contas (+)</button>
+                            <button class="stock-btn" style="background:#555;" onclick="replaceStock('${p.id}')">Substituir Tudo</button>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit" onclick="editProduct(${JSON.stringify(p).replace(/"/g, '&quot;')})">Editar</button>
+                        <button class="btn-delete" onclick="deleteProduct('${p.id}')">Excluir</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        async function handleSave() {
+            const id = document.getElementById('edit-id').value;
+            const data = {
+                name: document.getElementById('prod-name').value,
+                description: document.getElementById('prod-desc').value,
+                price: parseFloat(document.getElementById('prod-price').value),
+                image_url: document.getElementById('prod-img').value
+            };
+
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `http://localhost:8000/api/seller/products/${id}` : 'http://localhost:8000/api/seller/products';
+
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                alert(id ? 'Produto atualizado!' : 'Produto criado!');
+                resetForm();
+                fetchProducts();
+            } else {
+                alert('Erro ao salvar produto.');
+            }
+        }
+
+        function editProduct(p) {
+            document.getElementById('form-title').innerText = 'Editando Produto';
+            document.getElementById('edit-id').value = p.id;
+            document.getElementById('prod-name').value = p.name;
+            document.getElementById('prod-desc').value = p.description;
+            document.getElementById('prod-price').value = p.price;
+            document.getElementById('prod-img').value = p.image_url || '';
+            document.getElementById('save-btn').innerText = 'Salvar Alterações';
+            document.getElementById('cancel-btn').style.display = 'block';
+        }
+
+        function resetForm() {
+            document.getElementById('form-title').innerText = 'Criar Novo Produto';
+            document.getElementById('edit-id').value = '';
+            document.getElementById('prod-name').value = '';
+            document.getElementById('prod-desc').value = '';
+            document.getElementById('prod-price').value = '';
+            document.getElementById('prod-img').value = '';
+            document.getElementById('save-btn').innerText = 'Publicar Item';
+            document.getElementById('cancel-btn').style.display = 'none';
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('Tem certeza que deseja excluir?')) return;
+            const res = await fetch(`http://localhost:8000/api/seller/products/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) fetchProducts();
+        }
+
+        async function updateStock(id, diff) {
+            const accountsStr = prompt("Cole as contas/chaves (uma por linha):");
+            if (!accountsStr) return;
+            const accounts = accountsStr.split('\n').map(l => l.trim()).filter(l => l);
+
+            const res = await fetch(`http://localhost:8000/api/seller/products/${id}/stock`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ accounts, mode: 'add' })
+            });
+            if (res.ok) fetchProducts();
+            else alert('Erro ao adicionar estoque.');
+        }
+
+        async function replaceStock(id) {
+            const accountsStr = prompt("Cole as novas contas (isso vai SUBSTITUIR o estoque atual):");
+            if (!accountsStr) return;
+            const accounts = accountsStr.split('\n').map(l => l.trim()).filter(l => l);
+
+            const res = await fetch(`http://localhost:8000/api/seller/products/${id}/stock`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ accounts, mode: 'replace' })
+            });
+            if (res.ok) fetchProducts();
+            else alert('Erro ao atualizar estoque.');
+        }
+
+        async function saveMP() {
+            const access_token = document.getElementById('mp-token').value;
+            const res = await fetch('http://localhost:8000/api/seller/mercadopago/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ access_token })
+            });
+            alert(res.ok ? 'Token do Mercado Pago atualizado!' : 'Erro ao salvar token.');
+        }
+
+        fetchProducts();
+    </script>
+</body>
+</html>
